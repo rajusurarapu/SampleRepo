@@ -1,0 +1,179 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf510
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 AndaleMono;\f2\fnil\fcharset0 Consolas;
+}
+{\colortbl;\red255\green255\blue255;\red83\green83\blue83;\red41\green43\blue45;\red38\green38\blue38;
+\red255\green255\blue255;}
+\margl1440\margr1440\vieww33400\viewh18240\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\fs24 \cf0 Bindings:\
+\
+\pard\pardeftab720\sl360
+
+\f1 \cf2 \{\cf0 \
+\'a0\'a0\'a0\cf3 "assetBindings"\cf4 :\cf2 [\cf0 \
+\'a0\'a0\'a0\'a0\'a0\'a0\cf2 \{\
+\pard\pardeftab720\sl360
+\cf0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\cf3 "url"\cf4 :\cf0 "cms://id1"\cf4 ,\cf0 \
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\cf3 "contentValue"\cf4 :\cf0 "Test-One"\cf4 ,\cf0 \
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\cf3 "target"\cf4 :\cf0 "view-one"\cf4 ,\cf0 \
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\cf3 "propertyKeyPath"\cf4 :\cf0 "textValue"\
+\'a0\'a0\'a0\'a0\'a0\'a0\cf2 \}\cf4 ,\cf0 \
+\'a0\'a0\'a0\'a0\'a0\'a0\cf2 \{        \cf0 \
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\cf3 "url"\cf4 :\cf0 "cms://id2"\cf4 ,\cf0 \
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\cf3 "contentValue"\cf4 :\cf0 "Test-two"\cf4 ,\cf0 \
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\cf3 "target"\cf4 :\cf0 "view-one"\cf4 ,\cf0 \
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\cf3 "propertyKeyPath"\cf4 :\cf0 "textValue"\
+\'a0\'a0\'a0\'a0\'a0\'a0\cf2 \}\cf0 \
+\'a0\'a0\'a0\cf2 ]\cf0 \
+\pard\pardeftab720\sl360
+\cf2 \}\
+Bindings: \
+[\
+ Object\
+    propertyKeyPath: "textValue"\
+    target: "view-two"\
+    url: "remote_test.html"\
+    __proto__: Object\
+   , \
+  Object\
+    propertyKeyPath: "textValue"\
+    target: undefined\
+    url: "remote_test1.html"\
+   __proto__: Object\
+ ]\
+\
+\
+APRootView.sharedObject.inspectableProperties\
+Object\
+  appearance: Object\
+  label: null\
+  thresholds: Object\
+  value: Object\
+  configurable: false\
+  enumerable: true\
+get: function () \{var Y=this[W];if(Y||typeof Y==="function")\{return Y.apply(this);\}\}\
+set: function (Z) \{var Y=this[V];if(Y||typeof Y==="function")\{return Y.apply(this,arguments);\}\}\
+__proto__: Object\
+__proto__: Object\
+height: Object\
+label: null\
+thresholds: Object\
+value: Object\
+__proto__: Object\
+margin: Object\
+label: null\
+thresholds: Object\
+value: Object\
+__proto__: Object\
+target: Object\
+label: null\
+thresholds: Object\
+value: Object\
+__proto__: Object\
+viewId: Object\
+label: null\
+thresholds: Object\
+value: Object\
+__proto__: Object\
+width: Object\
+label: null\
+thresholds: Object\
+value: Object\
+\
+\pard\pardeftab720\sl300
+
+\f2\fs26 \cf0 \cb5 APRootView.sharedObject.HTMLString - \
+\
+"<body class="ap-desktop ap-root ap-view" data-view-id="page-view" style="visibility: visible; ">\
+	<h2 class="ap-heading debug ap-view" data-view-id="view-one" style="visibility: visible; ">\
+		Binding API\
+	</h2>\
+	<section class="ap-section debug ap-text ap-view" data-view-id="view-two" style="visibility: visible; "><section class="ap-section">\
+		<h2 class="ap-heading">APBindingManager</h2>\
+			APBindingManager.sharedObject.bindings\
+		<br>\
+			APBindingManager.sharedObject.addBinding(object, propertyKeyPath, URL)\
+		<br>\
+			APBindingManager.sharedObject.removeBinding(object, propertyKeyPath, URL)\
+		<br>\
+			APBindingManager.processJSONBindingsForViews()\
+	<br>\
+	</section>\
+</section>\
+	<script type="text/json">\{"assetBindings":[\{"url":"remote_test.html","target":"view-two","propertyKeyPath":"textValue"\},\{"propertyKeyPath":"textValue","url":"remote_test1.html"\}]\}</script>\
+	<script src="main.js"></script>\
+\
+</body>"\
+\
+\
+\
+APRootView.fetchViewById("view-two").textValue\
+"<section class="ap-section"> <h2 class="ap-heading"> APBindingManager </h2> APBindingManager.sharedObject.bindings\
+<br> APBindingManager.sharedObject.addBinding(object, propertyKeyPath, URL)\
+<br> APBindingManager.sharedObject.removeBinding(object, propertyKeyPath, URL)\
+<br> APBindingManager.processJSONBindingsForViews()\
+<br>\
+</section>\
+"\
+\
+\
+APRootView.fetchViewById("view-one").textValue = "Rajesh"\
+"Rajesh"\
+APRootView.fetchViewById("view-one").textValue\
+undefined\
+\
+\
+APRootView.sharedObject.fetchInspectableProperties()\
+Object\
+orderIndex: Array[2]\
+  0: "view-one"\
+  1: "view-two"\
+ length: 2\
+ __proto__: Array[0]\
+ views: Object\
+    view-one: Object\
+      appearance: Object\
+      height: Object\
+      margin: Object\
+      target: Object\
+      textValue: Object\
+      viewId: Object\
+      width: Object\
+    __proto__: Object\
+   view-two: Object\
+     appearance: Object\
+     height: Object\
+     margin: Object\
+     target: Object\
+     textValue: Object\
+     viewId: Object\
+     width: Object\
+\
+\
+APRootViewController.pageVersion\
+0\
+\
+APBindingManager.sharedObject.addBinding("view-three", "textValue","remote_test3.html")\
+ Object\
+addBinding: function (object, propertyKeyPath, URL) \{\
+get bindings: function () \{var Y=this[W];if(Y||typeof Y==="function")\{return Y.apply(this);\}\}\
+get sharedObject: function () \{var Y=this[W];if(Y||typeof Y==="function")\{return Y.apply(this);\}\}\
+get templateHTMLString: function () \{var Y=this[W];if(Y||typeof Y==="function")\{return Y.apply(this);\}\}\
+arguments: null\
+caller: null\
+length: 0\
+name: ""\
+prototype: Object\
+__proto__: function () \{\
+getBindings: function () \{\
+getSharedObject: function () \{\
+hash: 3\
+initialize: function () \{\
+name: "APBindingManager"\
+processJSONBindingsForViews: function () \{\
+removeBinding: function (object, propertyKeyPath) \{\
+set bindings: undefined\
+set sharedObject: undefined\
+set templateHTMLString: function (Z) \{var Y=this[V];if(Y||typeof Y==="function")\{return Y.apply(this,arguments);\}\}\
+type: "APObject"}
