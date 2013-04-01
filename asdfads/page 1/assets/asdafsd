@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:context="http://www.springframework.org/schema/context"  xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="
+    http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/util
+    http://www.springframework.org/schema/util/spring-util-3.0.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-3.0.xsd
+    http://www.springframework.org/schema/task
+    http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+
+	<context:annotation-config />
+	<context:component-scan base-package="com.server" />
+	<context:component-scan base-package="net.customware.gwt.dispatch.server.spring" />
+
+    <!-- Hrnet messaging / processing beans-->
+    <context:component-scan base-package="com.server.messaging" />
+
+    <!-- Activates @Scheduled and @Async annotations for scheduling -->    
+    <task:annotation-driven executor="taskExecutor"/>
+
+    <!-- Configures Spring MVC -->
+    <import resource="mvc-inter.xml"/>
+	<import resource="httpClient.xml" />
+
+    <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="100"/>
+        <property name="maxPoolSize" value="$AppConfig{threadPoolSize}"/>
+        <property name="queueCapacity" value="$AppConfig{threadPoolqueuecapacity}"/>
+    </bean>
+	
+    <bean id="settingsTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="300"/>
+        <property name="maxPoolSize" value="$AppConfig{settingsThreadPoolSize}"/>
+        <property name="queueCapacity" value="$AppConfig{settingsThreadPoolQueueCapacity}"/>
+    </bean>
+
+	<bean class="com.diginsite.services.util.spring.ext.ConfigurationPlaceholderConfigurer">
+		<property name="config" ref="envConfig" />
+	</bean>
+
+    <bean id="appConfigurationPlaceholderConfigurer"
+		class="com.diginsite.services.util.spring.ext.ConfigurationPlaceholderConfigurer">
+		<property name="config" ref="appConfig" />
+		<property name="placeholderPrefix" value="$AppConfig{" />
+	</bean>
+
+	<bean id="requestInterceptor"
+		class="com.server.interceptors.RequestInterceptor">
+		<property name="envConfig" ref="envConfig" />
+        <property name="appConfig" ref="appConfig" />
+	</bean>
+
+	<bean id="handshakeInterceptor"
+		class="com.server.interceptors.HandshakeInterceptor">
+		<property name="appConfig" ref="appConfig" />
+	</bean>
+
+
+    <bean id="jsonPInterceptor"
+		class="com.server.interceptors.JSONPInterceptor">
+	</bean>
+
+	<bean id="clientCertValidationInterceptor" lazy-init="false"
+		class="com.server.interceptors.ClientCertValidationInterceptor">
+	        <constructor-arg ref="appConfig" ></constructor-arg>
+	</bean>
+
+    <bean id="velocityConfig" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+        <property name="velocityProperties">
+            <props>
+                <prop key="resource.loader">webapp</prop>
+                <prop key="webapp.resource.loader.class">org.apache.velocity.tools.view.WebappResourceLoader</prop>
+                <prop key="webapp.resource.loader.path">/WEB-INF/templates</prop>
+            </props>
+        </property>
+    </bean>
+
+	<bean name="/error.htm"
+		class="com.server.controllers.ErrorController">
+		<property name="successView" value="error" />
+	</bean>
+
+	<bean id="defaultHandlerMapping"
+		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping" />
+
+	<bean id="ssoUrlMapping"
+		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="interceptors">
+			<list>
+				<ref bean="clientCertValidationInterceptor" />
+			</list>
+		</property>
+		<property name="mappings">
+			<props>
+				<prop key="/sso">SSOController</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="exampleUrlMapping"
+		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="interceptors">
+			<list>
+				<ref bean="handshakeInterceptor" />
+			</list>
+		</property>
+		<property name="mappings">
+			<props>
+				<prop key="/com.example.example/example.htm">exampleController</prop>
+                <prop key="/com.example.example/historypage">historyPageController</prop>                
+			</props>
+		</property>
+	</bean>
+
+    <bean name="methodResolver" class="org.springframework.web.servlet.mvc.multiaction.InternalPathMethodNameResolver">
+        <property name="suffix" value="Handler"/>
+    </bean>
+
+    <bean id="promotionAjaxController" class="org.springframework.web.servlet.mvc.multiaction.MultiActionController">
+        <property name="methodNameResolver"><ref bean="methodResolver"/></property>
+        <property name="delegate" ref="promotionControllerService"/>
+    </bean>
+
+    
+    <bean id="historyAjaxController" class="org.springframework.web.servlet.mvc.multiaction.MultiActionController">
+        <property name="methodNameResolver"><ref bean="methodResolver"/></property>
+        <property name="delegate" ref="accountHistoryControllerService"/>
+    </bean>
+
+    <bean id="checkImagesAjaxController" class="org.springframework.web.servlet.mvc.multiaction.MultiActionController">
+        <property name="methodNameResolver"><ref bean="methodResolver"/></property>
+        <property name="delegate" ref="checkImageControllerService"/>
+    </bean>
+
+    <bean id="userPreferencesAjaxController" class="org.springframework.web.servlet.mvc.multiaction.MultiActionController">
+        <property name="methodNameResolver"><ref bean="methodResolver"/></property>
+        <property name="delegate" ref="userPreferencesControllerService"/>
+    </bean>
+
+    <bean id="purchaseRewardsController" class="org.springframework.web.servlet.mvc.multiaction.MultiActionController">
+        <property name="methodNameResolver"><ref bean="methodResolver"/></property>
+        <property name="delegate" ref="purchaseRewardsControllerService"/>
+    </bean>
+
+    <bean id="exampleController" class="org.springframework.web.servlet.mvc.multiaction.MultiActionController">
+        <property name="methodNameResolver"><ref bean="methodResolver"/></property>
+        <property name="delegate" ref="exampleController"/>        
+    </bean>
+
+	<bean id="feedbackController" class="org.springframework.web.servlet.mvc.multiaction.MultiActionController">
+		<property name="methodNameResolver"><ref bean="methodResolver"/></property>
+        <property name="delegate" ref="feedbackControllerService"/>
+	</bean>
+
+    <bean id="transferController" class="org.springframework.web.servlet.mvc.multiaction.MultiActionController">
+        <property name="methodNameResolver"><ref bean="methodResolver"/></property>
+        <property name="delegate" ref="transfersControllerService"/>        
+    </bean>
+
+    <bean id="changeStartPageController" class="org.springframework.web.servlet.mvc.multiaction.MultiActionController">
+        <property name="methodNameResolver"><ref bean="methodResolver"/></property>
+        <property name="delegate" ref="changeStartUpService"/>        
+    </bean>
+
+    <bean id="outsideAccountsController" class="org.springframework.web.servlet.mvc.multiaction.MultiActionController">
+        <property name="methodNameResolver"><ref bean="methodResolver"/></property>
+        <property name="delegate" ref="outsideAccountsControllerService"/>
+    </bean>
+
+    <bean id="widgetAjaxCallsController" class="org.springframework.web.servlet.mvc.multiaction.MultiActionController">
+        <property name="methodNameResolver"><ref bean="methodResolver"/></property>
+        <property name="delegate" ref="customWidgetControllerService"/>
+    </bean>
+
+	<bean id="billPayAjaxController" class="org.springframework.web.servlet.mvc.multiaction.MultiActionController">
+		<property name="methodNameResolver"><ref bean="methodResolver"/></property>
+		<property name="delegate" ref="billPayControllerService"/>
+	</bean>
+
+    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="order" value="1"/>
+        <property name="mediaTypes">
+            <map>
+                <entry key="xml" value="application/xml"/>
+                <entry key="json" value="application/json"/>
+            </map>
+        </property>
+        <property name="viewResolvers">
+	        <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
+        </property>
+        <property name="defaultViews">
+            <list>
+                <bean class="org.springframework.web.servlet.view.xml.MarshallingView">
+                    <constructor-arg>
+                      <bean class="org.springframework.oxm.xstream.XStreamMarshaller"  />
+                    </constructor-arg>
+                  </bean>
+                <bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" />
+            </list>
+        </property>
+        <property name="ignoreAcceptHeader" value="true" />        
+    </bean>
+    <!--<bean id="example1View" class="com.server.controllers.CSVFMVIEW"></bean>-->
+	<bean id="freeMarkerviewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<property name="order" value="3"/>
+		<property name="viewClass" value="com.server.controllers.ExportView"/>
+		<property name="cache" value="true"/>
+		<property name="prefix" value=""/>
+		<property name="suffix" value=".ftl"/>
+		<property name="contentType" value="text/html;charset=UTF-8"/>
+		<!--&lt;!&ndash; if you want to use the Spring FreeMarker macros, set this property to true &ndash;&gt;-->
+		<!--<property name="exposeSpringMacroHelpers" value="true"/>-->
+	</bean>
+	<bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+		<property name="templateLoaderPath" value="/WEB-INF/templates/"/>
+		<property name="defaultEncoding" value="UTF-8" />
+	</bean>
+	
+    <bean id="preloadResourceInfoUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings">
+			<props>
+				<prop key="/ajax/preloadResourceInfo*">exampleController</prop>
+			</props>
+		</property>
+	</bean>
+
+    <bean id="uspPreloadResourceInfoUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="interceptors">
+			<list>
+				<ref bean="jsonPInterceptor" />
+			</list>
+		</property>
+		<property name="mappings">
+			<props>
+				<prop key="/ajax/uspPreloadResourceInfo*">exampleController</prop>
+			</props>
+		</property>
+	</bean>
+
+    <!-- Defines the URL mapping for /internal/buildVersion to the BuildVersionController -->
+    <bean id="buildVersionUrl" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="interceptors">
+            <list>
+                <ref bean="buildVersionInterceptor"/>
+            </list>
+        </property>
+        <property name="mappings">
+            <props>
+                <prop key="/buildVersion">buildVersionController</prop>
+            </props>
+        </property>
+    </bean>
+
+	<bean id="velocityViewResolver"
+		class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
+        <property name="order"  value="2"/>
+	    <property name="cache" value="false"/>
+		<property name="suffix" value=".vm" />
+        <property name="contentType" value="text/html; charset=UTF-8"/>
+	</bean>    
+
+	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="interceptors">
+			<list>
+				<ref bean="requestInterceptor" />
+			</list>
+		</property>
+		<property name="mappings">
+			<props>
+				<prop key="/transfers">transfersControllerService</prop>
+				<prop key="/history">accountHistoryControllerService</prop>
+				<prop key="/financeWorks">financeWorksControllerService</prop>
+				<prop key="/promotions">promotionControllerService</prop>                
+				<prop key="/changePage">changeStartUpService</prop>
+                <prop key="/historypage">historyPageController</prop>
+                <prop key="/refreshSession">exampleController</prop>
+                <prop key="/ajax/logUIEvent*">exampleController</prop>
+                <prop key="/ajax/history/offersAndRedemptions*">purchaseRewardsController</prop>                 
+                <prop key="/ajax/history/dashboardSummary*">purchaseRewardsController</prop>
+				<prop key="/ajax/history/promotions*">promotionAjaxController</prop>
+				<prop key="/ajax/history/checkImage*">checkImagesAjaxController</prop>
+				<prop key="/ajax/history/depositImage*">checkImagesAjaxController</prop>
+                <prop key="/ajax/history/transactions*">historyAjaxController</prop>
+                <prop key="/ajax/feedBack*">feedbackController</prop>
+                <prop key="/ajax/purchaseRewards/optIn*">purchaseRewardsController</prop>
+                <prop key="/ajax/transferFee*">transferController</prop>
+                <prop key="/ajax/transfer*">transferController</prop>
+                <prop key="/ajax/changeStartPage*">changeStartPageController</prop>
+                <prop key="/ajax/userPreferences*">userPreferencesAjaxController</prop>
+                <prop key="/ajax/financeWorks/*">outsideAccountsController</prop>
+                <prop key="/custom">customWidgetControllerService</prop>
+                <prop key="/ajax/custom*">widgetAjaxCallsController</prop>
+				<prop key="/ajax/billPay/*">billPayAjaxController</prop>
+            </props>
+		</property>
+	</bean>
+
+	<bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<prop key="java.lang.Exception">error</prop>                                                                                    
+			</props>    
+		</property>
+	</bean>
+</beans>
