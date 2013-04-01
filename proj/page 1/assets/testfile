@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:oxm="http://www.springframework.org/schema/oxm"    
+	xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+    http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-1.5.xsd    
+    
+
+    <bean id="responseTimeMethodInterceptor"
+		class="comabc.server.interceptors.ResponseTimeInterceptor"/>
+
+    <bean id="webServiceClientResponseTimeInterceptor"
+		class="comabc.server.interceptors.WebServiceClientResponseTimeInterceptor"/>
+    
+	<bean
+		class="com.services.util.spring.ext.ConfigurationPlaceholderConfigurer">
+		<property name="config" ref="envConfig" />
+	</bean>
+
+	<bean id="appConfigurationPlaceholderConfigurer"
+		class="com.services.util.spring.ext.ConfigurationPlaceholderConfigurer">
+		<property name="config" ref="appConfig" />
+		<property name="placeholderPrefix" value="$AppConfig{" />
+	</bean>
+
+	<bean id="httpInvokerRequestExecutor"
+		class="org.springframework.remoting.httpinvoker.CommonsHttpInvokerRequestExecutor">
+		<constructor-arg ref="httpClientBackEnd" />
+	</bean>
+
+	<bean id="abcHttpInvokerRequestExecutor"
+		class="org.springframework.remoting.httpinvoker.CommonsHttpInvokerRequestExecutor">
+		<constructor-arg ref="httpClientabc" />
+	</bean>
+	
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>abc_messages</value>
+			</list>
+		</property>
+	</bean>
+
+
+	<oxm:jaxb2-marshaller id="service1Marshaller" contextPath="comabc.server.services.serviceB.ccws"/>
+	<bean id="service1MessageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory" />
+    <bean id="service1MessageSender" class="org.springframework.ws.transport.http.CommonsHttpMessageSender">
+        <constructor-arg>
+	        <ref bean="httpClientserviceB"/>
+	    </constructor-arg>
+	</bean>
+
+    <bean id="service1Service" class="comabc.server.services.serviceB.service1Client">
+        <property name="webServiceTemplate" ref="service1ServiceTemplate"/>
+    </bean>
+
+    <bean id="service1ServiceTemplate"  class="org.springframework.ws.client.core.WebServiceTemplate">
+	    <constructor-arg ref="service1MessageFactory"/>
+        <property name="messageSender" ref="service1MessageSender"/>        
+        <property name="marshaller" ref="service1Marshaller" />
+        <property name="unmarshaller" ref="service1Marshaller" />
+	    <property name="defaultUri" value="$Config{environment/services/service1Url}"/>
+        <property name="interceptors">
+			<list>
+				<ref local="webServiceClientResponseTimeInterceptor"/>
+			</list>
+		</property>
+    </bean>
+
+    <oxm:jaxb2-marshaller id="marshaller" contextPath="comabc.server.services.service2.ops"/>
+	<bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory" />
+    <bean id="messageSender" class="org.springframework.ws.transport.http.CommonsHttpMessageSender">
+        <constructor-arg>
+	        <ref bean="httpClientservice"/>
+	    </constructor-arg>
+	</bean>
+
+    <bean id="service2SecurityService" class="comabc.server.services.service2.service2SecurityServiceClient">
+        <property name="webServiceTemplate" ref="service2SecurityServiceTemplate"/>
+        <property name="appConfig" ref="appConfig"/>
+    </bean>
+
+    <bean id="service2APIService" class="comabc.server.services.service2.service2APIServiceClient">
+        <property name="webServiceTemplate" ref="service2APIServiceTemplate"/>
+        <property name="appConfig" ref="appConfig"/>
+    </bean>
+
+    <bean id="service2SecurityServiceTemplate"  class="org.springframework.ws.client.core.WebServiceTemplate">
+	    <constructor-arg ref="messageFactory"/>
+        <property name="messageSender" ref="messageSender"/>
+        <property name="marshaller" ref="marshaller" />
+        <property name="unmarshaller" ref="marshaller" />
+	    <property name="defaultUri" value="$Config{environment/services/serviceBaseUrl}/SecurityService.asmx"/>
+        <property name="interceptors">
+			<list>
+				<ref local="webServiceClientResponseTimeInterceptor"/>
+			</list>
+		</property>
+    </bean>
+
+    <bean id="service2APIServiceTemplate"  class="org.springframework.ws.client.core.WebServiceTemplate">
+	    <constructor-arg ref="messageFactory"/>
+        <property name="messageSender" ref="messageSender"/>        
+        <property name="marshaller" ref="marshaller" />
+        <property name="unmarshaller" ref="marshaller" />
+	    <property name="defaultUri" value="$Config{environment/services/serviceBaseUrl}/Public/API/service2Api24.asmx"/>
+        <property name="interceptors">
+			<list>
+				<ref local="webServiceClientResponseTimeInterceptor"/>
+			</list>
+		</property>
+    </bean>
+	<bean id="com.product.sdp.server.services.service2.service2SecurityService"
+		class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="interceptorNames">
+			<list>
+				<value>responseTimeMethodInterceptor</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="clientConfigXML" class="org.apache.commons.configuration.XMLConfiguration">
+		<constructor-arg index="0"
+			ref="appConfig" />
+		<property name="expressionEngine">
+			<bean
+				class="org.apache.commons.configuration.tree.xpath.XPathExpressionEngine">
+			</bean>
+		</property>
+		<property name="reloadingStrategy">
+			<bean
+				class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy">
+				<property name="refreshDelay" value="300" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="jaxb2Marshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+		<property name="contextPath"
+				  value="com.intuit.schema.fs.common.v2:com.intuit.schema.domain.banking.financialinfo.v2:com.intuit.schema.domain.banking.financialinstitution.v2:com.intuit.schema.domain.banking.account.v2:com.intuit.schema.domain.banking.accounttransaction.v2:com.intuit.schema.domain.banking.ficustomer.v2:com.intuit.schema.domain.banking.fundingaccount.v2:com.intuit.schema.domain.banking.transfer.v2:com.intuit.schema.domain.banking.preference.v2:com.intuit.schema.domain.banking.image.v2:com.intuit.schema.domain.banking.messaging.v1"/>
+	</bean>
+	<!--- abc SERVICE -->
+	<bean id="serviceClient" class="com.services.soabase.web.rest.ServiceClient">
+		<property name="httpClient" ref="httpClientabc"/>
+		<property name="AppIdConfigPath" value="/application/id"/>
+		<property name="config" ref="clientConfigXML"/>
+		<property name="marshaller" ref="jaxb2Marshaller"/>
+		<property name="unmarshaller" ref="jaxb2Marshaller"/>
+	</bean>
+
+	<bean id="rawabcService" class="comabc.service.abcServiceClient">
+        <property name="httpClient" ref="serviceClient"/>
+        <property name="serviceUrl" value="$Config{environment/services/serviceGatewayUrl}/v2/fis"/>
+        <property name="abcV1ServiceUrl" value="$Config{environment/services/serviceGatewayUrl}/v1/fis"/>
+        <property name="appConfig" ref="appConfig"/>
+        <property name="envConfig" ref="envConfig"/>
+    </bean>
+
+	<bean id="abcService" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="raw$AppConfig{connectTo}Service"/>
+		<property name="interceptorNames">
+			<list>
+				<value>responseTimeMethodInterceptor</value>
+			</list>
+		</property>
+	</bean>
+
+	<!--CBSV2 -->
+	<bean id="cbsv2serviceClient" class="com.services.soabase.web.rest.ServiceClient">
+		<property name="httpClient" ref="httpClientBackEndV2"/>
+		<property name="AppIdConfigPath" value="/application/id"/>
+		<property name="config" ref="clientConfigXML"/>
+		<property name="marshaller" ref="jaxb2Marshaller"/>
+		<property name="unmarshaller" ref="jaxb2Marshaller"/>
+	</bean>
+
+	<bean id="rawCBSV2Service" class="comabc.service.abcServiceClient">
+        <property name="httpClient" ref="cbsv2serviceClient"/>
+        <property name="serviceUrl" value="$Config{environment/services/cbs2V2BaseUrl}/fis"/>
+        <property name="appConfig" ref="appConfig"/>
+        <property name="envConfig" ref="envConfig"/>
+    </bean>
+
+    <bean id="spiJaxb2Marshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="comabc.server.services.spiserviceB"/>
+    </bean>
+
+    <!-- SPI -->
+    <bean id="spiService" class="comabc.service.SPIClient">
+        <property name="httpClientSPIserviceB" ref="httpClientSPIserviceB" />
+        <property name="serviceUrl" value="$Config{environment/services/SPIBaseUrl}"/>
+        <property name="marshaller" ref="spiJaxb2Marshaller"/>
+        <property name="unmarshaller" ref="spiJaxb2Marshaller"/>
+    </bean>
+
+    <bean id="capsClient" class="com.intuit.ifs.caps.client.CAPSClientImpl" init-method="init" scope="singleton">
+        <property name="abcClient" ref="httpClientCAPS"/>
+        <property name="abcBaseURL" value="$Config{environment/services/serviceGatewayUrl}/v3"/>
+        <property name="serviceAuthorizationName" value="$AppConfig{serviceGatewayConnectParams/commonSecureHeaderName}"/>
+        <property name="serviceAuthorizationValue" value="$AppConfig{serviceGatewayConnectParams/commonSecureHeaderValue}"/>
+        <property name="serviceOfferingId" value="intuit_offeringId"/>
+        <property name="serviceOfferingIdValue" value="SDP"/>
+        <property name="serviceAppId" value="intuit_appId"/>
+        <property name="serviceAppIdValue" value="SDP"/>
+        <property name="marshaller" ref="jaxb2Marshaller"/>
+        <property name="unmarshaller" ref="jaxb2Marshaller"/>
+        <property name="originatingIp" value="intuit_originatingIp"/>
+        <property name="serviceTid" value="intuit_tid"/>
+        <property name="preferenceCacheRefreshDelay" value="$AppConfig{preferences/refreshDelay}"/>
+        <property name="preferenceCacheEnabled" value="$AppConfig{preferences/globalEnabled}"/>
+    </bean>
+</beans>
+
