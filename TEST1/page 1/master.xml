@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sections xmlns="http://www.w3.org/2001/XMLSchema-instance xsi:noNameSpaceSchemaLocation=../../master.xsd">
+     <id>page 1</id>
+     <section>
+          <ref>section 1</ref>
+     </section>
+</sections>
