@@ -8,9 +8,6 @@
                     <text>
                          <ref>Headline 1</ref>
                     </text>
-                    <image>
-                         <ref>MySuccesLoginFilter.java</ref>
-                    </image>
                </assets>
           </section>
      </sections>
