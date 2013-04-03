@@ -5,12 +5,12 @@
           <section>
                <id>section 1</id>
                <assets>
-                    <image>
-                         <ref>MyShiroRealm.java</ref>
-                    </image>
                     <text>
                          <ref>Headline 1</ref>
                     </text>
+                    <image>
+                         <ref>MySuccesLoginFilter.java</ref>
+                    </image>
                </assets>
           </section>
      </sections>
