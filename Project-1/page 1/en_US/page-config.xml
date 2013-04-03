@@ -1,1 +1,17 @@
-<?xml version="1.0" ?><page-config xmlns="http://www.w3.org/2001/XMLSchema-instance xsi:noNameSpaceSchemaLocation=../../page-config.xsd"><id>page 1</id><sections><section><id>section 1</id><assets><image><ref>UserService.java</ref></image><text><ref>Headline 1</ref></text></assets></section></sections></page-config>
+<?xml version="1.0" encoding="UTF-8"?>
+<page-config xmlns="http://www.w3.org/2001/XMLSchema-instance xsi:noNameSpaceSchemaLocation=../../page-config.xsd">
+     <id>page 1</id>
+     <sections>
+          <section>
+               <id>section 1</id>
+               <assets>
+                    <text>
+                         <ref>Headline 1</ref>
+                    </text>
+                    <image>
+                         <ref>UserServiceAction.java</ref>
+                    </image>
+               </assets>
+          </section>
+     </sections>
+</page-config>
