@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <assets xmlns="http://www.w3.org/2001/XMLSchema-instance xsi:noNameSpaceSchemaLocation=../../asset.xsd">
-     <image height="0" width="0">
-          <name>MyShiroRealm.java</name>
-          <value>/tmp/localrepo16/projects/Project-1/page 1/assets/MyShiroRealm.java</value>
-     </image>
      <text>
           <id>Headline 1</id>
-          <value>889475847867458567489768947698479867</value>
+          <value>6547636584978943757439058904389</value>
      </text>
+     <image height="0" width="0">
+          <id>MySuccesLoginFilter.java</id>
+          <value>/tmp/localrepo16/projects/Project-1/page 1/assets/MySuccesLoginFilter.java</value>
+     </image>
 </assets>
