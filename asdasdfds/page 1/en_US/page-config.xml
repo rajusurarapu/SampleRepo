@@ -10,5 +10,9 @@
                     </text>
                </assets>
           </section>
+          <section>
+               <id>section 2</id>
+               <assets/>
+          </section>
      </sections>
 </page-config>
