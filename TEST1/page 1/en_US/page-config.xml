@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page-config xmlns="http://www.w3.org/2001/XMLSchema-instance xsi:noNameSpaceSchemaLocation=../../page-config.xsd">
+     <id>page 1</id>
+     <sections>
+          <section>
+               <id>section 1</id>
+               <assets>
+                    <text>
+                         <ref>Headline 2</ref>
+                    </text>
+                    <image>
+                         <ref>retina_icon.jpg</ref>
+                    </image>
+               </assets>
+          </section>
+     </sections>
+</page-config>
