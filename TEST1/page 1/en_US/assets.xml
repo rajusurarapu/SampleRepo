@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assets xmlns="http://www.w3.org/2001/XMLSchema-instance xsi:noNameSpaceSchemaLocation=../../asset.xsd">
+     <id>page 1</id>
+     <text>
+          <id>Headline 2</id>
+          <value>Denakli</value>
+     </text>
+     <image height="81" width="81">
+          <id>retina_icon.jpg</id>
+          <value>/tmp/localrepo16/projects/TEST1/page 1/assets/retina_icon.jpg</value>
+     </image>
+</assets>
