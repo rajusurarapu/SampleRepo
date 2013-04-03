@@ -5,12 +5,12 @@
           <section>
                <id>section 1</id>
                <assets>
+                    <image>
+                         <ref>UserService.java</ref>
+                    </image>
                     <text>
                          <ref>Headline 1</ref>
                     </text>
-                    <image>
-                         <ref>UserServiceAction.java</ref>
-                    </image>
                </assets>
           </section>
      </sections>
