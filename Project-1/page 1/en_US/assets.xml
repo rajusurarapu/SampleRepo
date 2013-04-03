@@ -1,1 +1,12 @@
-<?xml version="1.0" ?><assets xmlns="http://www.w3.org/2001/XMLSchema-instance xsi:noNameSpaceSchemaLocation=../../asset.xsd"><id>0</id><image height="0" width="0"><id>2</id><value>/tmp/localrepo16/projects/Project-1/page 1/assets/UserService.java</value></image><text><id>1</id><value>aaaaaaaeaerdsdghgvhvbhbjnk7777777</value></text></assets>
+<?xml version="1.0" encoding="UTF-8"?>
+<assets xmlns="http://www.w3.org/2001/XMLSchema-instance xsi:noNameSpaceSchemaLocation=../../asset.xsd">
+     <id>0</id>
+     <text>
+          <id>1</id>
+          <value>66667676767676676767676767676</value>
+     </text>
+     <image height="0" width="0">
+          <id>2</id>
+          <value>/tmp/localrepo16/projects/Project-1/page 1/assets/UserServiceAction.java</value>
+     </image>
+</assets>
