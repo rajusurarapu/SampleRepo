@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page-config xmlns="http://www.w3.org/2001/XMLSchema-instance xsi:noNameSpaceSchemaLocation=../../page-config.xsd">
+     <id>Page 1</id>
+     <sections>
+          <section>
+               <id>Section 1</id>
+               <assets/>
+          </section>
+     </sections>
+</page-config>
